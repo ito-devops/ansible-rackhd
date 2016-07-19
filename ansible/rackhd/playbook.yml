@@ -1,0 +1,7 @@
+---
+# This Playbook will deploy rackhd from bintray packages.
+
+- hosts: all
+  roles:
+  - role: rackhd
+  - role: isc_dhcpd

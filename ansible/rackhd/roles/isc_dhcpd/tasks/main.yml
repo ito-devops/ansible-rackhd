@@ -1,0 +1,39 @@
+---
+
+- name: Install ISC DHCP Server
+  apt: name={{ item }} state=installed
+  with_items: "{{ isc_dhcp_packages }}"
+  tags:
+    - id.packages.isc.dhcpd
+    - packages
+    - isc.dhcpd
+
+- name: dhcpd empty discovered.conf file
+  copy: content="" dest={{ isc_dhcpd_settings.discovered_file }} force=no
+  tags:
+      - id.isc.dhcpd.discovered_conf
+      - isc.dhcpd
+      - configuration
+
+- name: dhcpd configuration file
+  template: src=templates/dhcpd.conf.j2 dest=/etc/dhcp/dhcpd.conf owner=root group=root mode=0644
+  register: dhcpdconf
+  tags:
+     - id.isc.dhcpd.dhcpd_conf
+     - configuration
+     - isc.dhcpd
+
+- name: Start DHCP Server
+  service: name=isc-dhcp-server state=started enabled=yes
+  tags:
+    - id.services.isc.dhcpd
+    - services
+    - isc.dhcpd
+
+- name: Restart DHCP Server
+  service: name=isc-dhcp-server state=restarted
+  when: dhcpdconf.changed
+  tags:
+    - isc.dhcpd
+    # no id tag because it's a conditional
+

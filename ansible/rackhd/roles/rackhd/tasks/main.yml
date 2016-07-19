@@ -1,0 +1,88 @@
+---
+# This Playbook runs all the common plays in the deployment
+
+- name: Ensure nodesource key
+  apt_key: id={{ nodesource_key_id }} url="{{ nodesource_key }}" state=present
+  tags:
+    - id.apt.key.nodesource
+    - packages
+
+- name: Create the nodesource repo
+  apt_repository: repo="{{ nodesource_repo }}" state=present
+  tags:
+    - id.apt.repo.nodesources
+    - packages
+
+- name: Ensure rackhd bintray key
+  apt_key: id={{ rackhd_key_id }} keyserver={{ rackhd_keyserver }} state=present
+  tags:
+    - id.apt.key.rackhd
+    - packages
+    - rackhd
+
+- name: Create the rackhd bintray repo
+  apt_repository: repo="{{ rackhd_repo }}" state=present
+  tags:
+    - id.apt.repo.rackhd
+    - packages
+    - rackhd
+
+- name: Install system packages
+  apt: name={{item}} state=installed
+  with_items: "{{ packages_system }}"
+  tags:
+    - id.packages.system
+    - packages
+
+
+- name: Install rackhd packages
+  apt: name={{item}} state=installed
+  with_items: "{{ packages_rackhd }}"
+  tags:
+    - id.packages.rackhd
+    - packages
+    - rackhd
+
+- name: monorail conf directory
+  file: path=/opt/onrack/etc/ state=directory
+  tags:
+    - id.monorail.onrack.directory
+    - configuration
+    - rackhd.monorail.configuration
+    - rackhd
+
+- name: monorail.json template
+  template: src=templates/monorail.json.j2 dest=/opt/onrack/etc/monorail.json owner=root group=root mode=0644
+  register: monorailjson
+  tags:
+     - id.monorail.configuration
+     - rackhd.monorail.configuration
+     - configuration
+     - rackhd
+
+- name: rackhd default service files
+  copy: content="" dest=/etc/default/{{item}} force=no
+  with_items: "{{ rackhd.services }}"
+  tags:
+      - id.service.rackhd.defaults
+      - configuration
+      - services
+      - rackhd
+
+- name: rackhd start services
+  service: name={{ item }} state=started enabled=yes
+  with_items: "{{ rackhd.services }}"
+  tags:
+    - id.service.rachkd
+    - services
+    - rackhd
+
+- name: restart rackhd start services
+  service: name={{ item }} state=restarted
+  with_items: "{{ rackhd.services }}"
+  when: monorailjson.changed
+  tags:
+    - rackhd
+
+
+

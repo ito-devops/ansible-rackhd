@@ -1,0 +1,5 @@
+# Defaults for isc dhcpd server
+
+isc_dhcp_packages:
+    - isc-dhcp-server
+    - bind9utils

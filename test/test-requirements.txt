@@ -1,0 +1,7 @@
+envassert
+fabric
+nose
+nose-timer
+teamcity-messages
+python-vagrant
+requests

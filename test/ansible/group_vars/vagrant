@@ -1,0 +1,36 @@
+# vagrant specific variables
+
+monorail:
+    southbound_ip: 192.168.37.2
+    southbound_netmask: 255.255.255.0
+    southbound_cidr: 24
+    default_gw: 10.0.2.2
+    northbound_ip: 0.0.0.0
+    sharedKey: qxfO2D3tIJsZACu7UA6Fbw0avowo8r79ALzn+WeuC8M=
+
+isc_dhcpd_settings:
+    algorithm: HMAC-MD5
+    ddns-update-style: none
+    default-lease-time: '600'
+    discovered_file: /etc/dhcp/discovered.conf
+    domain-name: vagrant.lab
+    domain-name-servers:
+        - 10.131.144.15
+        - 10.131.144.16
+    ignore-client-uids: 'true'
+    log-facility: local7
+    max-lease-time: '7200'
+    omapi-key: rackhd
+    omapi-port: '7911'
+    secret: wu7R2IsVY5fpUF0dXK+1FHjar+NnQR3cfw3y47k7RaNR22gf3oOgn5TuGcYARR6Focn9bvZMRVrI1LBpzvsE/Q==
+    static_hosts: {}
+    subnets:
+      192.168.37.0:
+        authoritative: true
+        broadcast-address: false
+        end_ip: 192.168.37.230
+        mtu: false
+        netmask: 255.255.255.0
+        routers: false
+        start_ip: 192.168.37.220
+        vendor-class-identifier: '"PXEClient"'

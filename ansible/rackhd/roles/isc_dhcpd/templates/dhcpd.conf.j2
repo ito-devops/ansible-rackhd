@@ -1,0 +1,57 @@
+# This file managed by Salt, do not edit by hand!!
+
+ddns-update-style {{ isc_dhcpd_settings['ddns-update-style'] }};
+option domain-name "{{ isc_dhcpd_settings['domain-name'] }}";
+option domain-name-servers {{ isc_dhcpd_settings['domain-name-servers']|join(',') }};
+default-lease-time {{ isc_dhcpd_settings['default-lease-time'] }};
+max-lease-time {{ isc_dhcpd_settings['max-lease-time'] }};
+log-facility {{ isc_dhcpd_settings['log-facility'] }};
+deny duplicates;
+ignore-client-uids {{ isc_dhcpd_settings['ignore-client-uids'] }};
+
+# OMAPI Section
+key  {{ isc_dhcpd_settings['omapi-key'] }} {
+   algorithm  {{ isc_dhcpd_settings['algorithm'] }};
+   secret  {{ isc_dhcpd_settings['secret'] }};
+};
+omapi-port {{ isc_dhcpd_settings['omapi-port'] }};
+omapi-key {{ isc_dhcpd_settings['omapi-key'] }};
+
+{% for subnet in isc_dhcpd_settings['subnets'].keys() %}
+subnet {{ subnet }} netmask {{ isc_dhcpd_settings['subnets'][subnet]['netmask'] }} {
+  {%- if isc_dhcpd_settings['subnets'][subnet]['authoritative'] %}
+  authoriatative;
+  {%- endif %}
+  {%- if isc_dhcpd_settings['subnets'][subnet]['start_ip'] and isc_dhcpd_settings['subnets'][subnet]['end_ip'] %}
+  range {{ isc_dhcpd_settings['subnets'][subnet]['start_ip'] }} {{ isc_dhcpd_settings['subnets'][subnet]['end_ip'] }};
+  {%- endif %}
+  {%- if isc_dhcpd_settings['subnets'][subnet]['routers'] %}
+  option routers {{ isc_dhcpd_settings['subnets'][subnet]['routers'] }};
+  {%- endif %}
+  {%- if isc_dhcpd_settings['subnets'][subnet]['broadcast-address'] %}
+  option broadcast-address {{ isc_dhcpd_settings['subnets'][subnet]['broadcast-address'] }};
+  {%- endif %}
+  {%- if isc_dhcpd_settings['subnets'][subnet]['vendor-class-identifier'] %}
+  option vendor-class-identifier {{ isc_dhcpd_settings['subnets'][subnet]['vendor-class-identifier'] }};
+  {%- endif %}
+  {%- if isc_dhcpd_settings['subnets'][subnet]['mtu'] %}
+  option  interface-mtu {{ isc_dhcpd_settings['subnets'][subnet]['mtu'] }};
+  {%- endif %}
+}
+{%- endfor %}
+{%- if isc_dhcpd_settings['static_hosts'] %}
+{% for host in isc_dhcpd_settings['static_hosts'] %}
+host {{ host }} {
+  hardware ethernet {{ isc_dhcpd_settings['static_hosts'][host]['mac'] }};
+  fixed-address {{ isc_dhcpd_settings['static_hosts'][host]['ip'] }};
+  if ((exists user-class) and (option user-class = "MonoRail")) {
+    filename "http://{{ monorail_ip }}:9080/api/common/profiles?mac=${net0/mac}&&ip=${net0/ip}";
+  } else {
+    filename "monorail.ipxe";
+  }
+}
+{% endfor %}
+{%- endif %}
+
+# discovered hosts
+include "{{ isc_dhcpd_settings['discovered_file'] }}";

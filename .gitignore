@@ -1,0 +1,8 @@
+.idea/
+.vagrant/
+.tox/
+*.pyc
+debian/files
+
+# ansbile retries
+*.retry

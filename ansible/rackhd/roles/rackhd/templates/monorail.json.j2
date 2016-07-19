@@ -1,0 +1,67 @@
+{
+    "CIDRNet": "{{ monorail.southbound_ip }}/{{ monorail.southbound_cidr }}",
+    "amqp": "amqp://localhost",
+    "apiServerAddress": "{{ monorail.southbound_ip }}",
+    "apiServerPort": 9080,
+    "broadcastaddr": "{{ monorail.southbound_ip }}",
+    "dhcpGateway": "{{ monorail.southbound_ip }}",
+    "dhcpProxyBindAddress": "{{ monorail.southbound_ip }}",
+    "dhcpProxyBindPort": 4011,
+    "dhcpSubnetMask": "{{ monorail.southbound_netmask }}",
+    "gatewayaddr": "{{ monorail.default_gw }}",
+    "httpBindAddress": "0.0.0.0",
+    "httpBindPort": 8080,
+    "httpEndpoints": [
+        {
+            "address": "0.0.0.0",
+            "port": 8080,
+            "httpsEnabled": false,
+            "proxiesEnabled": true,
+            "authEnabled": false,
+            "routers": "northbound-api-router"
+        },
+        {
+            "address": "{{ monorail.southbound_ip }}",
+            "port": 9080,
+            "httpsEnabled": false,
+            "proxiesEnabled": true,
+            "authEnabled": false,
+            "routers": "southbound-api-router"
+        }
+    ],
+    "httpDocsRoot": "./build/apidoc",
+    "httpEnabled": true,
+    "httpFileServiceRoot": "./static/files",
+    "httpFileServiceType": "FileSystem",
+    "httpProxies": [
+        {
+        "localPath": "/ubuntu",
+        "server": "http://{{ monorail.southbound_ip }}:3142",
+        "remotePath": "/ubuntu/"
+        },
+        {
+        "localPath": "/sles-install",
+        "server": "http://repo.core.rcsops.com",
+        "remotePath": "/sles-install/"
+        }
+    ],
+    "httpStaticRoot": "/opt/monorail/static/http",
+    "httpsBindAddress": "0.0.0.0",
+    "httpsBindPort": 8443,
+    "httpsCert": "data/dev-cert.pem",
+    "httpsEnabled": false,
+    "httpsKey": "data/dev-key.pem",
+    "httpsEnabled": false,
+    "httpsKey": "data/dev-key.pem",
+    "httpsPfx": null,
+    "mongo": "mongodb://localhost/pxe",
+    "sharedKey": "{{ monorail.sharedKey }}",
+    "statsd": "127.0.0.1:8125",
+    "subnetmask": "{{ monorail.southbound_netmask }}",
+    "syslogBindAddress": "{{ monorail.southbound_ip }}",
+    "syslogBindPort": 514,
+    "tftpBindAddress": "{{ monorail.southbound_ip }}",
+    "tftpBindPort": 69,
+    "tftpRoot": "./static/tftp",
+    "arpCacheEnabled": false
+}

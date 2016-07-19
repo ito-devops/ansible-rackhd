@@ -1,0 +1,30 @@
+# Global variables for rackhd installation
+
+rackhd_keyserver: hkp://keyserver.ubuntu.com:80
+rackhd_key_id: 379CE192D401AB61
+rackhd_repo: deb https://dl.bintray.com/rackhd/debian trusty main
+
+nodesource_key: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+nodesource_key_id: 68576280
+nodesource_repo: deb https://deb.nodesource.com/node_4.x/ trusty main
+
+# system packages
+packages_system:
+  - amtterm
+  - mongodb
+  - nodejs
+  - rabbitmq-server
+
+packages_rackhd:
+  - on-dhcp-proxy
+  - on-http
+  - on-syslog
+  - on-taskgraph
+  - on-tftp
+
+rackhd:
+    services:
+        - on-http
+        - on-dhcp-proxy
+        - on-taskgraph
+        - on-tftp
