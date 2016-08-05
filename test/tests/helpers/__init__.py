@@ -80,6 +80,10 @@ def check_rackhd_ports():
     assert port.is_listening(9080)  # rackhd southbound
 
 
+@task
+def list_packages():
+    response = run("dpkg-query -W -f='${binary:Package;-13}\t\t${Version}\t${binary:Summary}\n' on\*")
+    return response
 
 @task
 def reset_rackhd():

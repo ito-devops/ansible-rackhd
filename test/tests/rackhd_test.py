@@ -9,7 +9,9 @@ import vagrant
 
 import helpers
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
+# logger.setLevel(logging.INFO)
 
 class TestRackhd(unittest.TestCase):
 
@@ -30,7 +32,16 @@ class TestRackhd(unittest.TestCase):
         self.assertTrue(config)
         self.assertEqual(config['httpBindPort'], 8080)
 
+    def test_packages(self):
+        # Just list the packages.
+        data = fabric.api.execute(helpers.list_packages, host=self.server)
+        logger.warn('Packages: \n{0}'.format(data[self.server]))
+
     def tearDown(self):
+
+        # print(data)
+        # for line in data.split('\n'):
+        #     logger.warn(line)
         pass
 
 if __name__ == '__main__':
