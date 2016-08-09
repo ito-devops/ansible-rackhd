@@ -20,46 +20,29 @@ def fetch_json(url):
 
     response = run('curl {}'.format(url))
     data = json.loads(response)
-    logger.debug(data)
-
-    return data
-
-
-def fetch_json_request(url):
-
-    # http://servername:8080/api/1.1/config/
-    logger.debug('Fetching json data using requests at {0}'.format(url))
-
-    data = False
-    try:
-        r = requests.get(url)
-        data = r.json()
-    except ValueError:
-        logger.critical('Did not receive a json object from {0}'.format(url))
-    except requests.HTTPError as e:
-        logger.critical('Unable to reach rackhd at {0}, {1}:{2}'.format(url, e.errno, e.message))
+    # logger.debug(data)
 
     return data
 
 
 def rackhd_config(base='http://localhost:8080'):
     url = '{0}/api/1.1/config'.format(base)
-    return fetch_json_request(url)
-
+    # return fetch_json_request(url)
+    return fetch_json(url)
 
 def rackhd_nodes(base='http://localhost:8080'):
     url = '{0}/api/1.1/nodes'.format(base)
-    return fetch_json_request(url)
+    return fetch_json(url)
 
 
 def rackhd_node_workflows(id, base='http://localhost:8080'):
     url = '{0}/api/1.1/nodes/{1}/workflows'.format(base, id)
-    return fetch_json_request(url)
+    return fetch_json(url)
 
 
 def rackhd_workflow(id, base='http://localhost:8080'):
     url = '{0}/api/1.1/workflows/{1}'.format(base, id)
-    return fetch_json_request(url)
+    return fetch_json(url)
 
 
 def rackhd_workflow_task(id, taskname, base='http://localhost:8080'):
